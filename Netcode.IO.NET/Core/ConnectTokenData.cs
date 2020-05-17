@@ -25,7 +25,7 @@ namespace NetcodeIO.NET
 			byte addressVal = stream.ReadByte();
 
 			// if address type is not 0 or 1, data is not valid
-			if (addressVal != 0 && addressVal != 1)
+			if (addressVal != 1 && addressVal != 2)
 				throw new FormatException();
 
 			this.AddressType = (NetcodeAddressType)addressVal;
