@@ -428,6 +428,20 @@ namespace NetcodeIO.NET
 
 		#region Receive Packet Methods
 
+		void ConfirmClient(RemoteClient client)
+		{
+			if (!client.Confirmed)
+			{
+				// trigger callback
+				if (OnClientConnected != null)
+					OnClientConnected(client);
+
+				log("Client {0} connected", NetcodeLogLevel.Info, client.RemoteEndpoint);
+			}
+
+			client.Confirmed = true;
+		}
+
 		// check the packet against the client's replay protection, returning true if packet was replayed, false otherwise
 		private bool checkReplay(NetcodePacketHeader header, EndPoint sender)
 		{
@@ -488,6 +502,8 @@ namespace NetcodeIO.NET
                     log("Encryption mapping removed wrong mapping!", NetcodeLogLevel.Debug);
             }
 
+			ConfirmClient(client);
+
 			// trigger client disconnect callback
 			if (OnClientDisconnected != null)
 				OnClientDisconnected(client);
@@ -520,6 +536,8 @@ namespace NetcodeIO.NET
 
 			var clientIndex = encryptionManager.GetClientID(cryptIdx);
 			var client = clientSlots[clientIndex];
+
+			ConfirmClient(client);
 
 			// trigger callback
 			if (OnClientMessageReceived != null)
@@ -573,14 +591,7 @@ namespace NetcodeIO.NET
 				return;
 			}
 
-			if (!client.Confirmed)
-			{
-				// trigger callback
-				if (OnClientConnected != null)
-					OnClientConnected(client);
-
-				log("Client {0} connected", NetcodeLogLevel.Info, client.RemoteEndpoint);
-			}
+			ConfirmClient(client);
 
 			client.Confirmed = true;
 
