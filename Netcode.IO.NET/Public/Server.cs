@@ -639,12 +639,13 @@ namespace NetcodeIO.NET
 				return;
 			}
 
-			// if a client with the same id is already connected, ignore the packet
-			if (clientSlots.Any(x => x != null && x.ClientID == challengeToken.ClientID))
-			{
-				log("Client ID {0} already connected", NetcodeLogLevel.Debug, challengeToken.ClientID);
-				return;
-			}
+			// Not using this as a unique ID, we have too many connections, this is not random enough
+			//// if a client with the same id is already connected, ignore the packet
+			//if (clientSlots.Any(x => x != null && x.ClientID == challengeToken.ClientID))
+			//{
+			//	log("Client ID {0} already connected", NetcodeLogLevel.Debug, challengeToken.ClientID);
+			//	return;
+			//}
 
 			// if the server is full, deny the connection
 			int nextSlot = getFreeClientSlot();
@@ -709,13 +710,14 @@ namespace NetcodeIO.NET
 				return;
 			}
 
-			// if this server's public IP is not in the list of endpoints, packet is not valid
-			bool serverAddressInEndpoints = privateConnectToken.ConnectServers.Any(x => x.Endpoint.CompareEndpoint(this.listenEndpoint, this.Port));
-			if (!serverAddressInEndpoints)
-			{
-				log("Server address not listen in token", NetcodeLogLevel.Debug);
-				return;
-			}
+			// Temporarily Disabled Endpoint Verification
+			//// if this server's public IP is not in the list of endpoints, packet is not valid
+			//bool serverAddressInEndpoints = privateConnectToken.ConnectServers.Any(x => x.Endpoint.CompareEndpoint(this.listenEndpoint, this.Port));
+			//if (!serverAddressInEndpoints)
+			//{
+			//	log("Server address not listen in token", NetcodeLogLevel.Debug);
+			//	return;
+			//}
 
 			// if a client from packet source IP / port is already connected, ignore the packet
 			if (clientSlots.Any(x => x != null && x.RemoteEndpoint.Equals(sender)))
